@@ -25,8 +25,10 @@ def create_user(user:schemas.UserCreate, db: Session = Depends(get_db)):
 
     # add the new user to database: db - relation: users
     db.add(new_user)
+    
     # commit the changes to db
     db.commit()
+    
     # refresh the db and store the newly added users in new_user
     db.refresh(new_user)
     

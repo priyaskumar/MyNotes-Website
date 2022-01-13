@@ -18,11 +18,6 @@ router = APIRouter(
 def get_posts(db: Session = Depends(get_db), current_user : schemas.User = 
 Depends(oauth2.get_current_user), limit : int = 10, search : Optional[str] = "",
 skip : int = 0):
-    # -----------------------------------------------------
-    # cursor.execute("""SELECT * FROM posts """)
-    # posts = cursor.fetchall()
-    # -----------------------------------------------------
-    
     
     # _databaseName_query(_tableName_) -> performs select * from _tableName_
     posts = db.query(models.Post, func.count(models.Vote.post_id).label('votes')).join(
@@ -31,17 +26,13 @@ skip : int = 0):
     return posts
 
 
+
+
 # create a post (POST REQUEST --> send data to server)
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.Post)
 def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db), current_user : schemas.User = 
 Depends(oauth2.get_current_user)):
-    # -----------------------------------------------------
-    # cursor.execute("""INSERT INTO posts(id, title, content, published) VALUES (%s, %s, %s, %s) RETURNING *""",(post.id, post.title, post.content, post.published))
-    # new_post = cursor.fetchone()
     
-    # conn.commit()
-    # -----------------------------------------------------
-
     print(current_user.id)
 
     # storing the new entry in new_post
@@ -51,23 +42,22 @@ Depends(oauth2.get_current_user)):
 
     # add the new entry to database db
     db.add(new_post)
+    
     # commit the changes to db
     db.commit()
+    
     # refresh the db and store the newly added entries in new_post
     db.refresh(new_post)
     
     return new_post
 
 
+
 # show a specific post (GET REQUEST --> retrieve data from server)
 @router.get("/{id}", response_model=schemas.PostOut)    
 def get_post(id: int, db: Session = Depends(get_db), current_user : schemas.User = 
 Depends(oauth2.get_current_user)):
-    # -----------------------------------------------------
-    # cursor.execute("""SELECT * from posts WHERE id = %s """, (str(id),))
-    # post = cursor.fetchone()  
-    # -----------------------------------------------------
-
+    
     # find the post with specific id
     # filter() -> searches the required id through all the ids in Post model
     #             used instead of where id == post.id
@@ -76,6 +66,8 @@ Depends(oauth2.get_current_user)):
     #             the id is found already
     post = db.query(models.Post, func.count(models.Vote.post_id).label('votes')).join(
         models.Vote, models.Vote.post_id == models.Post.id, isouter=True).group_by(models.Post.id).filter(models.Post.id == id).first()
+    
+    # if the post doesn't exists throw an exception
     if not post:
         raise HTTPException(status_code = status.HTTP_404_NOT_FOUND,
         detail=f"post with id: {id} was not found")
@@ -88,25 +80,24 @@ Depends(oauth2.get_current_user)):
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(id : int, db: Session = Depends(get_db), current_user : schemas.User = 
 Depends(oauth2.get_current_user)):
-    # -----------------------------------------------------
-    # cursor.execute("""DELETE FROM posts WHERE id = %s returning *""", (str(id),))
-    # deleted_post = cursor.fetchone() 
-    # conn.commit()   
-    # -----------------------------------------------------
-
+    
     # find the post with specific id
     post_query = db.query(models.Post).filter(models.Post.id == id)
     post = post_query.first()
+    
     # if the post with the specific id doesn't exists throw an exception
     if not post:
         raise HTTPException(status_code= status.HTTP_404_NOT_FOUND,
         detail=f"post with id : {id} does not exist")
+    
     # if the post doesn't belong to the current user
     if post.owner_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
         detail=f"Sorry! You're not authuorized to perform the requested action!")
+    
     # else delete the entry with that required id
     post_query.delete(synchronize_session=False)
+    
     # commit the changes to the db
     db.commit()
     
@@ -119,27 +110,24 @@ Depends(oauth2.get_current_user)):
 def update_post(id: int, post: schemas.PostCreate, db: Session = Depends(get_db),
 current_user : schemas.User = 
 Depends(oauth2.get_current_user)):
-    # -----------------------------------------------------
-    # cursor.execute("""UPDATE posts SET title = %s, content = %s, published = %s WHERE id = %s RETURNING * """, ( post.title, post.content, post.published, str(id)))
-    # updated_post = cursor.fetchone()
-
-    # conn.commit()
-    # -----------------------------------------------------
-
-
+    
     # find the post with specific id
     post_query = db.query(models.Post).filter(models.Post.id == id)
     Post = post_query.first()
+    
     # if the id doesn't exists throw an exception
     if not Post:
         raise HTTPException(status_code= status.HTTP_404_NOT_FOUND,
         detail=f"post with id : {id} does not exist")
+    
     # if the post doesn't belong to the current user
     if Post.owner_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
         detail=f"Sorry! You're not authuorized to perform the requested action!")
+    
     # else update the post with new details
     post_query.update(post.dict(), synchronize_session=False)
+    
     # commit the changes to the db
     db.commit()
 

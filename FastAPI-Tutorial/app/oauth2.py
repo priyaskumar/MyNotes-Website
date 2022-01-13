@@ -13,6 +13,8 @@ SECRET_KEY = settings.secret_key
 ALGORITHM = settings.algorithm
 ACCESS_TOKEN_EXPIRE_MINUTES = int(settings.access_token_expire_mins)
 
+
+
 # a function to generate the access token for the user
 def create_access_token(data: dict):
     # the payload generated from data dict (data has the user id)
@@ -34,6 +36,9 @@ def create_access_token(data: dict):
 
     # return the encoded token
     return encoded_jwt
+
+
+    
 
 # a function to verify the token sent by the user is valid and hasn't expired
 def verify_access_token(token:str,credentials_exception):
