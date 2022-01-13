@@ -3,7 +3,9 @@ _Python-Flask Tutorial_
 
 This is a basic website (notes) build with Python using Flask (a web framework).
 
-This covers the basic concepts of authentication and databases.
+This covers the basic concepts of authentication and databases using the web framework - Flask
+
+Flask is generally used to create micro web apps
 
 The users can create a new account, add notes and delete them as and when required.
 

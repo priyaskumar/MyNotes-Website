@@ -3,8 +3,11 @@ from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
 
+
 db = SQLAlchemy()
 DB_NAME = "database.db"
+
+# a function to create a flask app
 
 def create_app():
     app = Flask(__name__)
@@ -17,6 +20,7 @@ def create_app():
     from .views import views
     from .auth import auth
 
+    # setup the blueprints
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
 
@@ -34,6 +38,7 @@ def create_app():
 
     return app
 
+# a function to create a database
 
 def create_database(app):
     if not path.exists('website/' + DB_NAME):

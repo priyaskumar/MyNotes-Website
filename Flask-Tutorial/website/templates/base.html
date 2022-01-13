@@ -60,6 +60,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+      
 
       {% else %}
       <div class="alert alert-success alter-dismissable fade show" role="alert">
@@ -70,6 +71,7 @@
       </div>
 
       {% endif %} 
+
     {% endfor %} 
     {% endif %} 
     {% endwith %}
@@ -97,5 +99,6 @@
       type="text/javascript"
       src="{{ url_for('static', filename='index.js') }}"
     ></script>
+
   </body>
 </html>

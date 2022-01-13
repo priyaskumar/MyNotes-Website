@@ -10,5 +10,5 @@ if __name__ == '__main__':
     # starts a web server
     
     # the server is re-run automatically if 
-    # there's some changes in the python code 
+    # there are some changes in the python code 
     app.run(debug=True)
