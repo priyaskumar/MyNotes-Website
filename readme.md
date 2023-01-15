@@ -58,10 +58,6 @@ _**Python Libraries**_:
     - Adding user notes
     - Deleting user notes
 
-## _Link to the Application_ :
-
-[Notes App](http://127.0.0.1:5000/)
-
 ## _References_ :
 
 - [Flask YouTube Tutorial](https://www.youtube.com/watch?v=dam0GPOAvVI)
