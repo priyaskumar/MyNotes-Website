@@ -1,4 +1,4 @@
-_Python-Flask Tutorial_
+_MyNotes_
 ==
 
 This is a basic website (notes) build with Python using Flask (a web framework).
